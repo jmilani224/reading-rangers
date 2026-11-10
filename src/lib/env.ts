@@ -32,5 +32,26 @@ export function readSupabaseConfig(env: Env): SupabaseConfig {
     return { ok: false, error: 'VITE_SUPABASE_URL must use https' }
   }
 
+  if (isSecretKey(anonKey)) {
+    return {
+      ok: false,
+      error: 'VITE_SUPABASE_ANON_KEY holds a secret (service_role) key. Use the anon or publishable key.',
+    }
+  }
+
   return { ok: true, url, anonKey }
+}
+
+// True for keys that bypass RLS: new-style secret keys, and legacy JWTs whose role is service_role.
+function isSecretKey(key: string): boolean {
+  if (key.startsWith('sb_secret_')) return true
+  const parts = key.split('.')
+  if (parts.length !== 3) return false
+  try {
+    const base64 = parts[1].replace(/-/g, '+').replace(/_/g, '/')
+    const payload: unknown = JSON.parse(atob(base64.padEnd(Math.ceil(base64.length / 4) * 4, '=')))
+    return typeof payload === 'object' && payload !== null && 'role' in payload && payload.role === 'service_role'
+  } catch {
+    return false
+  }
 }

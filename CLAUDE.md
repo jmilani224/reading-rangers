@@ -87,7 +87,7 @@ read-a-thon.com, which took $3k of last year's $10k.
 | `supabase/migrations/` | Schema, RLS policies, database functions (from #4) |
 | `supabase/functions/` | Webhooks (payments), scheduled emails |
 | `src/domain/` | Pure business rules and constants, each with a `*.test.ts` beside it |
-| `src/lib/` | Plumbing: env parsing (`env.ts`), the one Supabase client (`supabase.ts`) |
+| `src/lib/` | Plumbing: env parsing (`env.ts`), the one Supabase client (`getSupabase()` in `supabase.ts`) |
 | `src/App.tsx`, pages, components | Display and interaction only |
 
 Checks: `npm run typecheck`, `npm run lint` (oxlint, warnings fail), `npm test` (Vitest),

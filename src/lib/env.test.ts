@@ -36,5 +36,18 @@ describe('readSupabaseConfig', () => {
   it('rejects plain http except for a local Supabase stack', () => {
     expect(readSupabaseConfig({ ...good, VITE_SUPABASE_URL: 'http://abc.supabase.co' }).ok).toBe(false)
     expect(readSupabaseConfig({ ...good, VITE_SUPABASE_URL: 'http://127.0.0.1:54321' }).ok).toBe(true)
+    expect(readSupabaseConfig({ ...good, VITE_SUPABASE_URL: 'http://localhost:54321' }).ok).toBe(true)
+  })
+
+  it('rejects a new-style secret key', () => {
+    const result = readSupabaseConfig({ ...good, VITE_SUPABASE_ANON_KEY: 'sb_secret_abc123' })
+    expect(result.ok).toBe(false)
+  })
+
+  it('rejects a legacy service_role JWT but accepts an anon JWT', () => {
+    const jwt = (role: string) =>
+      ['eyJhbGciOiJIUzI1NiJ9', btoa(JSON.stringify({ role })).replace(/=+$/, ''), 'sig'].join('.')
+    expect(readSupabaseConfig({ ...good, VITE_SUPABASE_ANON_KEY: jwt('service_role') }).ok).toBe(false)
+    expect(readSupabaseConfig({ ...good, VITE_SUPABASE_ANON_KEY: jwt('anon') }).ok).toBe(true)
   })
 })
