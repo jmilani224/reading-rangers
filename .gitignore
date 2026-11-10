@@ -7,3 +7,6 @@ build/
 .next/
 .DS_Store
 supabase/.temp/
+*.local
+*.log
+dist-ssr/

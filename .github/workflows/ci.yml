@@ -28,6 +28,8 @@ jobs:
         run: npm run lint --if-present
       - if: steps.app.outputs.present == 'true'
         run: npm test --if-present
+      - if: steps.app.outputs.present == 'true'
+        run: npm run build --if-present
 
   review-gate:
     # The merge-side half of the review gate. /ship writes the code-reviewer verdict into the PR
