@@ -21,7 +21,19 @@ read-a-thon.com, which took $3k of last year's $10k.
 
 - **Backend**: Supabase (Postgres, Auth, Row Level Security, edge functions as needed). Joel has
   a Supabase Pro plan.
-- **Frontend and hosting**: not chosen yet (backlog #1, #2). Update this section when they are.
+- **Frontend**: React + TypeScript, built with Vite, as a static single-page app (decided
+  2026-11-10, backlog #1). The browser talks to Supabase directly with `supabase-js` and the
+  signed-in user's session, so **RLS is the security boundary**: never put the `service_role` key
+  or an authorization check that only the UI enforces in this code. Anything that needs a secret
+  or must run server-side (payment webhooks, scheduled emails, privileged writes) goes in a
+  Supabase edge function or a Postgres function.
+  - Why: nearly every page is behind sign-in, so server rendering buys little; a static app is the
+    cheapest to host and has no server to secure; React has the widest pool of help and leaves a
+    path to React Native if an iPhone app is ever wanted.
+  - Rejected: Next.js (adds a server to run and secure; Vercel's free Hobby plan is non-commercial),
+    SvelteKit (fewer libraries), Fly.io hosting (runs and bills a server we do not need).
+- **Hosting**: Cloudflare Pages free tier (allows commercial use), deploying from GitHub on merge
+  to `main`. Joel has a Cloudflare account. Setup, domain and the `/ship` deploy step are backlog #2.
 - **Payments**: Zeffy is the leading choice (free to nonprofits, API + webhook), pending a test that
   a student-name field comes through. Stripe is the fallback.
 - **Email**: transactional email for sign-in and reminders; provider not chosen yet.
@@ -68,7 +80,7 @@ read-a-thon.com, which took $3k of last year's $10k.
 
 ## What goes where
 
-Fill in once the frontend is chosen. The intended split:
+Fill in the module paths when the app skeleton lands (backlog #3). The intended split:
 
 | Layer | Responsibility |
 |-------|----------------|
