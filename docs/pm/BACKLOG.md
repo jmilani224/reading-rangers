@@ -6,15 +6,14 @@ Event starts **April 2027**.
 
 ## Now
 
-- **Wrap 2026-11-10**: Repo scaffolding (`/pm`, `/ship`, review gate, backlog) added. Next session
-  starts with **#1** (pick the frontend stack).
+- **2026-11-10**: #1 decided (Vite + React + TypeScript on Cloudflare Pages). Next up is **#3**
+  (app skeleton), then #2 (Pages setup and domain).
 
 ## Before launch
 
 ### Foundations
-- **#1** Pick the frontend framework and how it talks to Supabase · Process · P0
-- **#2** Pick hosting and domain (free tier) and wire deploys into `/ship` Step 7 · Process · P0 · Blocked by: #1
-- **#3** App skeleton: framework, typecheck, lint, test scripts, CI green · Tech Debt · P0 · Blocked by: #1
+- **#2** Set up Cloudflare Pages and the domain, and wire deploys into `/ship` Step 7 · Process · P0 · Blocked by: #3
+- **#3** App skeleton: Vite + React + TypeScript, supabase-js, typecheck, lint, test scripts, CI green · Tech Debt · P0
 - **#4** Data model and RLS: schools, classes, students, parent links, reading logs, donations · Feature · P0 · SPEC_NEEDED
 - **#5** Email sign-in with Supabase Auth (Google/Apple later) · Feature · P1 · Blocked by: #3
 
@@ -49,4 +48,5 @@ Event starts **April 2027**.
 
 ## Recently completed
 
+- 2026-11-10 · #1 Frontend stack chosen: Vite + React + TypeScript SPA on Cloudflare Pages, supabase-js with RLS (see CLAUDE.md "Stack")
 - 2026-11-10 · Repo scaffolding: `/pm`, `/ship`, code-reviewer, rls-auditor, review gate, backlog
