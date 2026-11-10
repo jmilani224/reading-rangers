@@ -57,7 +57,9 @@ small.
    Always ask it: can any role see data it should not (other families, classes, schools)? Can a
    total be miscounted? Can anything fail silently? Does it work on a phone?
 
-3. If the release touches `supabase/` or any `.sql`, also run `rls-auditor`.
+3. If the release touches `supabase/` or any `.sql`, also run `rls-auditor`. If it adds or changes
+   a page, a component, a color or an animation, also run the `designer` skill in REVIEW mode and
+   treat its Critical findings like code-review Criticals.
 4. **Read the verdict line.**
    - `VERDICT: REQUEST CHANGES` or `VERDICT: FAIL`: fix the Critical and Warning findings, commit,
      and review again. Do not merge.

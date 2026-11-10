@@ -30,6 +30,8 @@ read-a-thon.com, which took $3k of last year's $10k.
 
 - `/pm`: backlog intake, what's next, specs, end-of-session wrap. Backlog: `docs/pm/BACKLOG.md`.
 - `/ship`: checks, required code review, PR, merge, migrations, deploy check.
+- `/designer`: briefs, mocks and reviews for anything visual. Brand point of view and rules in
+  `.claude/skills/designer/references/brand.md`; Ashley and Aaron's decisions win.
 - **Code review is a gate, not a suggestion.** The `code-reviewer` agent (and `rls-auditor` for DB
   changes) must pass before merge. Two things enforce it:
   - `.claude/hooks/stop-gate.sh` (Stop hook) blocks the end of a turn while the branch has code
