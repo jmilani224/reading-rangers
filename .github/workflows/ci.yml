@@ -1,0 +1,68 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened, edited]
+
+jobs:
+  checks:
+    name: Checks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Skip when there is no app yet
+        id: app
+        run: |
+          if [ -f package.json ]; then echo "present=true" >> "$GITHUB_OUTPUT"; else echo "No package.json yet; nothing to check."; fi
+      - uses: actions/setup-node@v4
+        if: steps.app.outputs.present == 'true'
+        with:
+          node-version: 22
+          cache: npm
+      - if: steps.app.outputs.present == 'true'
+        run: npm ci
+      - if: steps.app.outputs.present == 'true'
+        run: npm run typecheck --if-present
+      - if: steps.app.outputs.present == 'true'
+        run: npm run lint --if-present
+      - if: steps.app.outputs.present == 'true'
+        run: npm test --if-present
+
+  review-gate:
+    # The merge-side half of the review gate. /ship writes the code-reviewer verdict into the PR
+    # body as "Code review: APPROVE" (or APPROVE WITH NITS) with the commit it reviewed. This job
+    # fails when a PR changes code and has no passing verdict for its current head commit.
+    # Make it a required check in branch protection so a red gate blocks the merge button.
+    name: Code review gate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Require a passing review for code changes
+        env:
+          BODY: ${{ github.event.pull_request.body }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          set -euo pipefail
+          code=$(git diff --name-only "$BASE_SHA" "$HEAD_SHA" | grep -E '\.(ts|tsx|js|jsx|mjs|cjs|sql)$|^supabase/' | grep -vE '^\.claude/' || true)
+          if [ -z "$code" ]; then echo "No code changes; review not required."; exit 0; fi
+          line=$(printf '%s\n' "$BODY" | grep -E '^Code review: (APPROVE|APPROVE WITH NITS) @ [0-9a-f]{7,40}' | tail -1 || true)
+          if [ -z "$line" ]; then
+            echo "::error::This PR changes code but its description has no 'Code review: APPROVE @ <sha>' line. Run /ship (or the code-reviewer agent) first."
+            exit 1
+          fi
+          reviewed=$(printf '%s' "$line" | sed -E 's/.* @ ([0-9a-f]+).*/\1/')
+          case "$HEAD_SHA" in
+            "$reviewed"*) echo "Review covers head $HEAD_SHA: $line" ;;
+            *) echo "::error::The review covers $reviewed but the PR head is now $HEAD_SHA. Review the new commits and update the line."; exit 1 ;;
+          esac
+          if printf '%s' "$code" | grep -qE '^supabase/|\.sql$'; then
+            rls=$(printf '%s\n' "$BODY" | grep -E '^RLS audit: PASS @ [0-9a-f]{7,40}' | tail -1 | sed -E 's/.* @ ([0-9a-f]+).*/\1/' || true)
+            case "$HEAD_SHA" in
+              "${rls:-none}"*) echo "RLS audit covers head." ;;
+              *) echo "::error::Database files changed and there is no 'RLS audit: PASS @ <head sha>' line for the current head."; exit 1 ;;
+            esac
+          fi
