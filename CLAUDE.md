@@ -82,11 +82,15 @@ read-a-thon.com, which took $3k of last year's $10k.
 
 ## What goes where
 
-Fill in the module paths when the app skeleton lands (backlog #3). The intended split:
-
-| Layer | Responsibility |
-|-------|----------------|
-| `supabase/migrations/` | Schema, RLS policies, database functions |
+| Path | Responsibility |
+|------|----------------|
+| `supabase/migrations/` | Schema, RLS policies, database functions (from #4) |
 | `supabase/functions/` | Webhooks (payments), scheduled emails |
-| shared logic module | Pure business rules and constants, unit-tested |
-| pages / components | Display and interaction only |
+| `src/domain/` | Pure business rules and constants, each with a `*.test.ts` beside it |
+| `src/lib/` | Plumbing: env parsing (`env.ts`), the one Supabase client (`supabase.ts`) |
+| `src/App.tsx`, pages, components | Display and interaction only |
+
+Checks: `npm run typecheck`, `npm run lint` (oxlint, warnings fail), `npm test` (Vitest),
+`npm run build`. CI runs all four. Browser settings are `VITE_SUPABASE_URL` and
+`VITE_SUPABASE_ANON_KEY` (see `.env.example`); never give a secret a `VITE_` name, because Vite
+bundles those into the page.

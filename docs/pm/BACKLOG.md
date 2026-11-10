@@ -6,14 +6,14 @@ Event starts **April 2027**.
 
 ## Now
 
-- **2026-11-10**: #1 decided (Vite + React + TypeScript on Cloudflare Pages). Next up is **#3**
-  (app skeleton), then #2 (Pages setup and domain).
+- **2026-11-10**: #1 decided (Vite + React + TypeScript on Cloudflare Pages). **#3** (app
+  skeleton) is IN_PROGRESS, then #2 (Pages setup and domain).
 
 ## Before launch
 
 ### Foundations
 - **#2** Set up Cloudflare Pages and the domain, and wire deploys into `/ship` Step 7 · Process · P0 · Blocked by: #3
-- **#3** App skeleton: Vite + React + TypeScript, supabase-js, typecheck, lint, test scripts, CI green · Tech Debt · P0
+- **#3** App skeleton: Vite + React + TypeScript, supabase-js, typecheck, lint, test scripts, CI green · Tech Debt · P0 · IN_PROGRESS
 - **#4** Data model and RLS: schools, classes, students, parent links, reading logs, donations · Feature · P0 · SPEC_NEEDED
 - **#5** Email sign-in with Supabase Auth (Google/Apple later) · Feature · P1 · Blocked by: #3
 

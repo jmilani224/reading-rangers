@@ -7,6 +7,17 @@ donate to the PTA, and classes compete on leaderboards. Built on Supabase.
 - Backlog: `docs/pm/BACKLOG.md`
 - What is built today: `docs/APP_STATE.md`
 
+## Develop
+
+Needs Node 22.
+
+```bash
+npm install
+cp .env.example .env.local   # then fill in the Supabase URL and anon key
+npm run dev                  # http://localhost:5173
+npm run typecheck && npm run lint && npm test
+```
+
 ## Workflow
 
 - `/pm` in Claude Code to add, plan and wrap up work
